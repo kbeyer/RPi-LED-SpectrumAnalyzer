@@ -3,8 +3,35 @@ import logging
 import alsaaudio as aa
 import decoder
 import numpy as np
+import urllib2
 
 CHUNK_SIZE = 2048
+
+def read_music_from_url(url="http://mp3.streampower.be/radio1-high.mp3", chunk_size=CHUNK_SIZE, play_audio=False):
+
+    #f=file('via_url.mp3', 'w')
+
+    url=urllib2.urlopen(url)
+
+    sample_rate = 44100 #musicfile.getframerate()
+    num_channels = 2 #musicfile.getnchannels()
+
+    if play_audio:
+        output = aa.PCM(aa.PCM_PLAYBACK, aa.PCM_NORMAL)
+        output.setchannels(num_channels)
+        output.setrate(sample_rate)
+        output.setformat(aa.PCM_FORMAT_S16_LE)
+        output.setperiodsize(CHUNK_SIZE)
+
+    while True:
+        #f.write(url.read(CHUNK_SIZE))
+        chunk = url.read(CHUNK_SIZE)
+        if len(chunk) == 0:
+            break
+        if play_audio:
+            output.write(chunk)
+
+        yield chunk, sample_rate
 
 
 def read_musicfile_in_chunks(path, chunk_size=CHUNK_SIZE, play_audio=True):

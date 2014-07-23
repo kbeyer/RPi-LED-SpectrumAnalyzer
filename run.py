@@ -10,9 +10,9 @@ if len(sys.argv) > 1:
 else:
     path = 'sample.mp3'
 
-columns = 8
+columns = 10
 gap_leds = 0
-total_leds = 40
+total_leds = 80
 
 led = ColumnedLEDStrip(leds=total_leds, columns=columns, gap_leds=gap_leds)
 led.all_off()
