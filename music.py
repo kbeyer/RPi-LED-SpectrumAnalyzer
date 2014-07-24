@@ -117,19 +117,23 @@ def calculate_levels(data, sample_rate, frequency_limits, channels=2, bits=16):
     columns = len(frequency_limits)
     chunk_size = len(power)
 
-    # take the log10 of the resulting sum to approximate how human ears perceive sound levels
-    matrix = [
-        np.log10(
-            np.sum(
-                power[
-                    piff(frequency_limits[i][0], sample_rate, chunk_size):
-                    piff(frequency_limits[i][1], sample_rate, chunk_size)
-                ]
-            )
-        )
+    matrix = []
 
-        for i in range(columns)
-    ]
+    for i in range(columns):
+        left_index = piff(frequency_limits[i][0], sample_rate, chunk_size)
+        right_index = piff(frequency_limits[i][1], sample_rate, chunk_size)
+        if left_index == right_index:
+            right_index += 1
+            cheat_factor = 0.5
+        else:
+            cheat_factor = 1
+
+        # take the log10 of the resulting sum to approximate how human ears
+        # perceive sound levels
+
+        matrix.append(
+            np.log10(np.sum(power[left_index:right_index])) * cheat_factor
+        )
 
     return matrix
 
@@ -140,5 +144,4 @@ if __name__ == '__main__':
 
     for chunk, sample_rate in read_musicfile_in_chunks('sample.mp3', play_audio=True):
         # data = calculate_levels(chunk, sample_rate, frequency_limits)
-        # print data
         pass

@@ -40,17 +40,15 @@ class SampleCallbacks(RaopCallbacks):
         self.channels = channels
         self.samplerate = samplerate
 
-        min_frequency = 300
-        max_frequency = samplerate / 20 * 10  # Abusing integer division
+        min_frequency = 500
+        max_frequency = samplerate / 30 * 10  # Abusing integer division
         self.frequency_limits = calculate_column_frequency(
             min_frequency, max_frequency, columns
         )
         self.buffer = ''
 
     def audio_process(self, session, buffer):
-        # print "Processing", + len(buffer), "bytes of audio"
         data = calculate_levels(buffer, self.samplerate, self.frequency_limits, self.channels, self.bits)
-        # print data
         led.display_data(data[::-1])
     def audio_destroy(self, session):
         print "Destroying"
@@ -75,5 +73,5 @@ while True:
 
 # TODO:
 # - height normalization fixes.
-# - first column -Inf
-# - auto detect a working port
+# - command line to listen on stream or not
+# - minor changes to install.sh to install shairplay

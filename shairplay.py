@@ -5,6 +5,16 @@ from Shairplay import DnssdService, LoadShairplay, RaopCallbacks, RaopLogLevel, 
 
 SERVICES = {}
 
+def get_port(port=5000):
+    import socket
+    s = socket.socket()
+    while True:
+        try:
+            s.bind(('', port))
+            return port
+        except socket.error:
+            port += 1
+
 def initialize_shairplay(path, callback_class, log_callback=None):
     """ Initialize shairplay and return the services created. """
 
@@ -24,7 +34,7 @@ def initialize_shairplay(path, callback_class, log_callback=None):
     raop.set_log_callback(log_callback)
 
     hwaddr = pack('BBBBBB', 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB)
-    port = 5000
+    port = get_port()
     port = raop.start(port, hwaddr)
 
     dnssd = DnssdService(shairplay)

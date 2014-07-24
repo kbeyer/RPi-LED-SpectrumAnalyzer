@@ -16,7 +16,7 @@ class ColumnedLEDStrip(LEDStrip):
         print 'Leds per col: %d' % self._column_leds
         self._color = 0.0
 
-    def _normalize_height(self, height, h_min=3, h_range=13):
+    def _normalize_height(self, height, h_min=7, h_range=5):
         # fixme: h_min = 9, h_range = 1, in the example code.
         height = (height - h_min) / float(h_range)
         if height < 0.05:
