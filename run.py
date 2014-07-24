@@ -49,12 +49,9 @@ class SampleCallbacks(RaopCallbacks):
 
     def audio_process(self, session, buffer):
         # print "Processing", + len(buffer), "bytes of audio"
-        if len(self.buffer) < 2048:
-            self.buffer += buffer
-        else:
-            data = calculate_levels(buffer, self.samplerate, self.frequency_limits, self.channels, self.bits)
-            # print data
-            led.display_data(data)
+        data = calculate_levels(buffer, self.samplerate, self.frequency_limits, self.channels, self.bits)
+        # print data
+        led.display_data(data[::-1])
     def audio_destroy(self, session):
         print "Destroying"
     def audio_set_volume(self, session, volume):
@@ -74,3 +71,9 @@ while True:
     except KeyboardInterrupt:
         shutdown_shairplay()
         break
+
+
+# TODO:
+# - height normalization fixes.
+# - first column -Inf
+# - auto detect a working port

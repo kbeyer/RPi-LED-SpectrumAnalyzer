@@ -10,7 +10,7 @@ def initialize_shairplay(path, callback_class, log_callback=None):
 
     if not callable(log_callback):
         def log_callback(level, message):
-            print "Level", level, ":", message
+            pass
 
     shairplay = LoadShairplay(path)
     callbacks = callback_class()
@@ -24,7 +24,7 @@ def initialize_shairplay(path, callback_class, log_callback=None):
     raop.set_log_callback(log_callback)
 
     hwaddr = pack('BBBBBB', 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB)
-    port = 5002
+    port = 5000
     port = raop.start(port, hwaddr)
 
     dnssd = DnssdService(shairplay)
