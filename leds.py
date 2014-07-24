@@ -1,17 +1,19 @@
 from raspledstrip.ledstrip import LEDStrip
-from raspledstrip.color import wheel_color
+from raspledstrip.color import wheel_color, SysColors
 
 
 class ColumnedLEDStrip(LEDStrip):
 
-    def __init__(self, leds=32, columns=3, gap_leds=4):
+    def __init__(self, leds=32, columns=3, gap_leds=4, skip_leds=0):
         LEDStrip.__init__(self, leds, True)
         self.driver.spi.max_speed_hz = 7000000 #12000000
         print 'Changed spi freq to %d' % self.driver.spi.max_speed_hz
         self.columns = columns
         self._column_data = [0] * columns
         self._gap_leds = gap_leds # + 1
-        self._column_leds = (leds - (self._gap_leds * (columns - 1)))/columns
+        self._skip_leds = skip_leds
+        self._column_leds = (leds - skip_leds - (self._gap_leds * (columns - 1)))/columns
+        print 'Leds per col: %d' % self._column_leds
         self._color = 0.0
 
     def _normalize_height(self, height, h_min=3, h_range=13):
@@ -34,7 +36,7 @@ class ColumnedLEDStrip(LEDStrip):
         """Display the data for a specific column."""
 
         height = self._normalize_height(height)
-
+        #height = 1
 
         if height < self._column_data[column_number]:
             height = self._column_data[column_number] * decay
@@ -50,7 +52,7 @@ class ColumnedLEDStrip(LEDStrip):
             start = end - int(self._column_leds * height)
 
         if start != end:
-            self.fill(color, start, end)
+            self.fill(color, start+self._skip_leds, end+self._skip_leds)
 
     def display_data(self, data, color=None, decay=0.5):
         """Data is a list of heights.

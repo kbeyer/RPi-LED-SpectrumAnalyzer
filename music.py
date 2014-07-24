@@ -46,12 +46,12 @@ def read_musicfile_in_chunks(path, chunk_size=CHUNK_SIZE, play_audio=True):
         output.setchannels(num_channels)
         output.setrate(sample_rate)
         output.setformat(aa.PCM_FORMAT_S16_LE)
-        output.setperiodsize(CHUNK_SIZE)
+        output.setperiodsize(chunk_size)
 
     # fixme: we could do the writing to audio in a thread ... ?
 
     while True:
-        chunk = musicfile.readframes(CHUNK_SIZE)
+        chunk = musicfile.readframes(chunk_size)
         if len(chunk) == 0:
             break
         if play_audio:
@@ -80,13 +80,13 @@ def calculate_column_frequency(min_frequency, max_frequency, columns):
     return zip(frequency_limits[:-1], frequency_limits[1:])
 
 
-def piff(val, sample_rate):
+def piff(val, sample_rate, chunk_size):
     """Return the power array index corresponding to a particular frequency."""
 
-    return int(CHUNK_SIZE * val / sample_rate)
+    return int(chunk_size * val / sample_rate)
 
 
-def calculate_levels(data, sample_rate, frequency_limits):
+def calculate_levels(data, sample_rate, frequency_limits, channels=2, bits=16):
     """Calculate frequency response for each channel
 
     Initial FFT code inspired from the code posted here:
@@ -98,8 +98,8 @@ def calculate_levels(data, sample_rate, frequency_limits):
     """
 
     # create a numpy array. This won't work with a mono file, stereo only.
-    data_stereo = np.frombuffer(data, dtype=np.int16)
-    data = data_stereo[::2]  # pull out the even values, just using left channel
+    data_stereo = np.frombuffer(data, dtype=getattr(np, 'int%s' % bits, np.int16))
+    data = data_stereo[::channels]  # pull out the even values, just using left channel
 
     # if you take an FFT of a chunk of audio, the edges will look like
     # super high frequency cutoffs. Applying a window tapers the edges
@@ -115,14 +115,15 @@ def calculate_levels(data, sample_rate, frequency_limits):
     power = np.abs(fourier) ** 2
 
     columns = len(frequency_limits)
+    chunk_size = len(power)
 
     # take the log10 of the resulting sum to approximate how human ears perceive sound levels
     matrix = [
         np.log10(
             np.sum(
                 power[
-                    piff(frequency_limits[i][0], sample_rate):
-                    piff(frequency_limits[i][1], sample_rate)
+                    piff(frequency_limits[i][0], sample_rate, chunk_size):
+                    piff(frequency_limits[i][1], sample_rate, chunk_size)
                 ]
             )
         )
@@ -135,8 +136,9 @@ def calculate_levels(data, sample_rate, frequency_limits):
 
 if __name__ == '__main__':
 
-    frequency_limits =  calculate_column_frequency(400, 12000)
+    frequency_limits =  calculate_column_frequency(400, 12000, 8)
 
-    for chunk, sample_rate in read_musicfile_in_chunks('sample1.mp3', play_audio=True):
-        data = calculate_levels(chunk, sample_rate, frequency_limits)
-        print data
+    for chunk, sample_rate in read_musicfile_in_chunks('sample.mp3', play_audio=True):
+        # data = calculate_levels(chunk, sample_rate, frequency_limits)
+        # print data
+        pass
