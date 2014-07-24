@@ -18,7 +18,7 @@ gap_leds = 0
 total_leds = 100
 skip_leds = 4
 
-led = ColumnedLEDStrip(leds=total_leds, columns=columns, gap_leds=gap_leds)
+led = ColumnedLEDStrip(leds=total_leds, columns=columns, gap_leds=gap_leds, skip_leds=skip_leds)
 led.all_off()
 time.sleep(0.1)
 
@@ -53,7 +53,7 @@ class SampleCallbacks(RaopCallbacks):
             self.buffer += buffer
         else:
             data = calculate_levels(buffer, self.samplerate, self.frequency_limits, self.channels, self.bits)
-            print data
+            # print data
             led.display_data(data)
     def audio_destroy(self, session):
         print "Destroying"

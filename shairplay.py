@@ -24,7 +24,7 @@ def initialize_shairplay(path, callback_class, log_callback=None):
     raop.set_log_callback(log_callback)
 
     hwaddr = pack('BBBBBB', 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB)
-    port = 5004
+    port = 5002
     port = raop.start(port, hwaddr)
 
     dnssd = DnssdService(shairplay)

@@ -36,7 +36,6 @@ class ColumnedLEDStrip(LEDStrip):
         """Display the data for a specific column."""
 
         height = self._normalize_height(height)
-        #height = 1
 
         if height < self._column_data[column_number]:
             height = self._column_data[column_number] * decay
@@ -74,12 +73,12 @@ class ColumnedLEDStrip(LEDStrip):
 
 if __name__ == '__main__':
     import time
-    #import random
-    led = ColumnedLEDStrip()
+    columns = 12
+    led = ColumnedLEDStrip(leds=100, columns=columns, gap_leds=0, skip_leds=4)
     led.all_off()
 
     for _ in xrange(100000):
-        data = [1, 1, 1] # [random.random() for _ in range(led.columns)]
+        data = [1] * columns
         led.display_data(data)
         print data
-        time.sleep(0.01)
+        time.sleep(0.1)
