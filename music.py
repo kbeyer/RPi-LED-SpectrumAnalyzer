@@ -99,7 +99,7 @@ def calculate_levels(data, sample_rate, frequency_limits, channels=2, bits=16):
 
     # create a numpy array. This won't work with a mono file, stereo only.
     data_stereo = np.frombuffer(data, dtype=getattr(np, 'int%s' % bits, np.int16))
-    data = data_stereo[::channels]  # pull out the even values, just using left channel
+    data = data_stereo[::channels]  # pull out the left channel
 
     # if you take an FFT of a chunk of audio, the edges will look like
     # super high frequency cutoffs. Applying a window tapers the edges
@@ -114,10 +114,14 @@ def calculate_levels(data, sample_rate, frequency_limits, channels=2, bits=16):
     # Calculate the power spectrum
     power = np.abs(fourier) ** 2
 
+    # Filter out noise?
+    power2 = power * (power > (np.max(power) + np.min(power))/2.0)
+
     columns = len(frequency_limits)
     chunk_size = len(power)
 
     matrix = []
+    matrix2 = []
 
     for i in range(columns):
         left_index = piff(frequency_limits[i][0], sample_rate, chunk_size)
@@ -134,8 +138,11 @@ def calculate_levels(data, sample_rate, frequency_limits, channels=2, bits=16):
         matrix.append(
             np.log10(np.sum(power[left_index:right_index])) * cheat_factor
         )
+        matrix2.append(
+            np.log10(np.sum(power2[left_index:right_index])) * cheat_factor
+        )
 
-    return matrix
+    return matrix2
 
 
 if __name__ == '__main__':
