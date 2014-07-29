@@ -18,6 +18,11 @@ sudo apt-get install -y python-alsaaudio
 sudo apt-get install -y python-numpy
 sudo apt-get install -y python-virtualenv
 
+# Dependencies for shairplay
+sudo apt-get install -y autoconf automake libtool
+sudo apt-get install -y libltdl-dev libao-dev libavahi-compat-libdnssd-dev
+sudo apt-get install -y avahi-daemon
+
 # Create a virtualenv
 VENV=./venv
 virtualenv $VENV --system-site-packages
@@ -43,3 +48,18 @@ pip install -e git+https://github.com/doceme/py-spidev.git#egg=spidev
 # Install RPi-LED code
 # FIXME: Use Kyle's fork for the different driver.
 pip install -e git+git@github.com:adammhaile/RPi-LPD8806.git#egg=raspledstrip
+
+# Install shairplay
+wget -c https://github.com/juhovh/shairplay/archive/master.zip
+unzip -o master.zip
+cd shairplay-master
+# we need to run it twice, since it fails the first time for some reason
+./autogen.sh || true
+./autogen.sh || true
+./configure --prefix=$BUILD_DIR/venv
+make
+make install
+# fixme: is it worth detecting the architecture?
+cp $BUILD_DIR/venv/lib/libshairplay.so  $BUILD_DIR/venv/lib/libshairplay64.so
+cp $BUILD_DIR/venv/lib/libshairplay.so $BUILD_DIR/venv/lib/libshairplay32.so
+cp src/bindings/python/Shairplay.py $BUILD_DIR/venv/lib/python2.7/site-packages/
