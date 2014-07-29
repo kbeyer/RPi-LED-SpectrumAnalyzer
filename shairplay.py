@@ -1,7 +1,5 @@
-import time
 from struct import pack
-from Shairplay import DnssdService, LoadShairplay, RaopCallbacks, RaopLogLevel, RaopService
-
+from Shairplay import DnssdService, LoadShairplay, RaopLogLevel, RaopService
 
 SERVICES = {}
 
