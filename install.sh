@@ -15,6 +15,7 @@ sudo apt-get install -y ffmpeg || true
 sudo apt-get install -y libav-tools || true
 sudo apt-get install -y lame flac faad vorbis-tools
 sudo apt-get install -y python-alsaaudio
+sudo apt-get install -y python-imaging
 sudo apt-get install -y python-numpy
 sudo apt-get install -y python-virtualenv
 

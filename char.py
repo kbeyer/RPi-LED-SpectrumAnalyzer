@@ -9,6 +9,8 @@ from raspledstrip.ledstrip import LEDStrip
 from raspledstrip.color import SysColors, color_hex
 
 
+# fixme: this code is specific to our setup.  Anybody using this will need to
+# tweak this function for their setup.
 def xy_to_led_coordinates(x, y, origin_led=99, strip_along='y', x_length=12, y_length=8):
     if x % 2 == 0:
         led = origin_led - (y_length * x) - y
