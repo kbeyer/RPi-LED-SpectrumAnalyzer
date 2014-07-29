@@ -63,3 +63,8 @@ make install
 cp $BUILD_DIR/venv/lib/libshairplay.so  $BUILD_DIR/venv/lib/libshairplay64.so
 cp $BUILD_DIR/venv/lib/libshairplay.so $BUILD_DIR/venv/lib/libshairplay32.so
 cp src/bindings/python/Shairplay.py $BUILD_DIR/venv/lib/python2.7/site-packages/
+
+# Copy our patches to raspledstrip
+cd $INSTALL_DIR
+# fixme: the patches could be cleaned up, but don't have the time right now...
+cp patches/ $BUILD_DIR/venv/src/raspledstrip/raspledstrip/
