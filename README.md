@@ -30,3 +30,8 @@ To use airplay, run:
 To use line input, run:
 
     python run.py linein
+
+## Attributions
+
+The sample file included in this project is Lack Of Colour by Krish Ashok,
+licensed under a Creative Commons Licence.
