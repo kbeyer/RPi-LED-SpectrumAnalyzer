@@ -48,7 +48,7 @@ pip install -e git+https://github.com/doceme/py-spidev.git#egg=spidev
 
 # Install RPi-LED code
 # FIXME: Use Kyle's fork for the different driver.
-pip install -e git+git@github.com:adammhaile/RPi-LPD8806.git#egg=raspledstrip
+pip install -e git+http://github.com/adammhaile/RPi-LPD8806.git#egg=raspledstrip
 
 # Install shairplay
 wget -c https://github.com/juhovh/shairplay/archive/master.zip
